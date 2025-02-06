@@ -1,28 +1,28 @@
-require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+import mongoose, { ConnectOptions } from 'mongoose';
 
-// Initialize cached connection in the global scope
-let cached = (global as any).cached || { conn: null, promise: null };
+const MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI) throw new Error("MongoDB URI is missing");
 
-const MONGODB_URI = "mongodb+srv://yohnikoadriano:iE6ABagbGDWWm1zr@cluster0.i5dsq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+let cached = (global as any).mongoose || { conn: null, promise: null };
+
+const clientOptions: ConnectOptions = {
+  serverApi: {
+    version: "1", // "1" is inferred as a literal type here
+    strict: true,
+    deprecationErrors: true,
+  },
+  dbName: 'connectify',
+  bufferCommands: false,
+};
 
 export const connectToDB = async () => {
-    if (cached.conn) return cached.conn; // Return cached connection if available
-    if (!MONGODB_URI) throw new Error('MongoDB URI is missing');
+  if (cached.conn) return cached.conn;
 
-    // Connect to MongoDB without deprecated options
-    cached.promise = cached.promise || MongoClient.connect(MONGODB_URI, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    })
-    .then((client:any) => {
-        cached.conn = client.db('connectify'); // Select your database
-        return cached.conn;
-    });
+  cached.promise = cached.promise || mongoose.connect(MONGODB_URI, clientOptions);
+  cached.conn = await cached.promise;
 
-    await cached.promise;
-    return cached.conn;
+  await mongoose.connection?.db?.admin().command({ ping: 1 });
+  console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+  return cached.conn;
 };
