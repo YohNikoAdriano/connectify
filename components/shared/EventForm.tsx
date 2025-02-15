@@ -1,6 +1,11 @@
 "use client";
 
-// zod validator
+// react
+import { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+// shadcn ui zod validator
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -24,16 +29,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+// uploadthing
+import { useUploadThing } from "@/lib/uploadthing";
+
 // constant
 import { eventDefaultValues } from "@/constant";
 
 // lib
 import { eventFormSchema } from "@/lib/validator";
+import { createEvent } from "@/lib/actions/event.actions";
 import Dropdown from "./Dropdown";
 import FileUploader from "./FileUploader";
-import { useState } from "react";
-import Image from "next/image";
-import { Check } from "lucide-react";
 
 type EventFormProps = {
   userId: string;
@@ -41,16 +47,72 @@ type EventFormProps = {
 };
 
 const initialFormValues = eventDefaultValues;
-const EventForm = ({ userId, type }: EventFormProps) => {
-  const [files, setFiles] = useState<File[]>([]);
 
+const EventForm = ({ userId, type }: EventFormProps) => {
+  const router = useRouter()
+
+  // Image
+  const [files, setFiles] = useState<File[]>([]);
+  const {startUpload} = useUploadThing('imageUploader')
+
+  // Form
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: initialFormValues,
   });
+  
+  // OnSubmit
+  async function onSubmit(values: z.infer<typeof eventFormSchema>) {
 
-  function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    console.log(values);
+    // handle when upload image
+    let uploadedImageUrl = values.imageUrl
+    if(files.length > 0){
+      const uploadedImages = await startUpload(files)
+      if(!uploadedImages){
+        return
+      }
+      uploadedImageUrl = uploadedImages[0].ufsUrl
+    }
+
+    // handle when Create
+    if(type === 'Create'){
+      try {
+        const newEvent = await createEvent({
+          event: { ...values, imageUrl: uploadedImageUrl},
+          userId,
+          path: '/profile'
+        })
+
+        if(newEvent){
+          form.reset()
+          router.push("/")
+          // router.push(`/event/${newEvent._id}`)
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    // handle when Update
+    // if(type === 'Update'){
+    //   try {
+    //     const newEvent = await createEvent({
+    //       event: { ...values, imageUrl: uploadedImageUrl},
+    //       userId,
+    //       path: '/profile'
+    //     })
+
+    //     if(newEvent){
+    //       form.reset()
+    //       router.push(`/event/${newEvent._id}`)
+    //     }
+
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
+
   }
 
   return (
@@ -268,6 +330,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                                   Free Ticket
                                 </label>
                                 <Checkbox
+                                  onCheckedChange={field.onChange}
                                   id="isFree"
                                   className="mr-2 h-5 w-5 border-2 border-primary-500"
                                 />

@@ -52,6 +52,8 @@ export async function POST(req: Request) {
   // For this guide, log payload to console
   const { id } = evt.data
   const eventType = evt.type
+  console.log("Webhook received eventType:", eventType);
+
 
     if( eventType === 'user.created'){
         const { id, email_addresses, image_url, first_name, last_name, username } = evt.data
@@ -67,15 +69,18 @@ export async function POST(req: Request) {
         
         const newUser = await createUser(user)
 
+        const client = await clerkClient()
+        let result
         if(newUser){
-            (await clerkClient()).users.updateUserMetadata(id, {
-                publicMetadata: {
-                    userId: newUser._id
-                }
-            })
+          result = await client.users.updateUserMetadata(id, {
+            publicMetadata: {
+              userId: newUser._id, // Simpan userId di publicMetadata
+            },
+          });
+          console.log(result)
         }
 
-        return NextResponse.json({message: 'OK', user: newUser})
+        return NextResponse.json({message: 'OK', user: newUser, result:result})
     }
 
     if (eventType === "user.updated") {

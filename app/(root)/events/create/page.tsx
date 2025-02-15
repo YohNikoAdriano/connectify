@@ -13,6 +13,7 @@ const CreateEvents = async () => {
   // },[])
 
   const { sessionClaims } = await auth();
+  console.log(sessionClaims?.publicMetadata); 
   const userId = sessionClaims?.userId as string;
 
   return (

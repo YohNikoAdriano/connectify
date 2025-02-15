@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// Data Type and Rules on Form
 export const eventFormSchema = z.object({
   title: z
     .string()
