@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+// lib
 import { connectToDB } from "@/lib/database";
 import Event from "@/lib/database/models/event.model";
 import User from "@/lib/database/models/user.model";
@@ -34,7 +35,6 @@ const populateEvent = (query: any) => {
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
     await connectToDB();
-    
 
     // make organizer from user first
     const organizer = await User.findById(userId);

@@ -50,7 +50,6 @@ export async function POST(req: Request) {
 
   // Do something with payload
   // For this guide, log payload to console
-  const { id } = evt.data
   const eventType = evt.type
   console.log("Webhook received eventType:", eventType);
 
@@ -74,7 +73,7 @@ export async function POST(req: Request) {
         if(newUser){
           result = await client.users.updateUserMetadata(id, {
             publicMetadata: {
-              userId: newUser._id, // Simpan userId di publicMetadata
+              userId: newUser._id,
             },
           });
           console.log(result)

@@ -1,6 +1,5 @@
 import EventForm from "@/components/shared/EventForm";
 import { auth } from "@clerk/nextjs/server";
-// import React, { useEffect, useState } from 'react'
 
 const CreateEvents = async () => {
   // const [userId, setUserId] = useState<string | null>(null)
@@ -13,7 +12,6 @@ const CreateEvents = async () => {
   // },[])
 
   const { sessionClaims } = await auth();
-  console.log(sessionClaims?.publicMetadata); 
   const userId = sessionClaims?.userId as string;
 
   return (
