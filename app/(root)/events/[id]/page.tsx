@@ -10,10 +10,11 @@ const EventDetails = async ( {params, searchParams}: SearchParamProps ) => {
   const { id } = await params;
   const event = await getEventById(id);
 
+  const queryParams = await searchParams
   const relatedEvents = await getRelatedEventsByCategory({
     categoryId: event.category._id,
     eventId: event._id,
-    page: searchParams.page as string
+    page: queryParams.page as string
   })
 
 
