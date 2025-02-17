@@ -1,3 +1,4 @@
+import CheckoutButton from '@/components/shared/CheckoutButton'
 import Collection from '@/components/shared/Collection'
 import { getEventById, getRelatedEventsByCategory } from '@/lib/actions/event.actions'
 import { formatDateTime } from '@/lib/utils'
@@ -49,6 +50,9 @@ const EventDetails = async ( {params, searchParams}: SearchParamProps ) => {
                 </p>
               </div>
             </div>
+
+            {/* Checkout Button to Payment */}
+            <CheckoutButton event={event} />
 
             {/* Middle Information */}
             {/* Time and Location */}
