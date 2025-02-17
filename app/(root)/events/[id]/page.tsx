@@ -5,9 +5,8 @@ import Image from 'next/image'
 import React from 'react'
 
 const EventDetails = async ( {params}: SearchParamProps ) => {
-  const { id } = await params;  // Tunggu sampai params resolved menjadi { id: string }
-
-  // Ambil event berdasarkan id
+  
+  const { id } = await params;
   const event = await getEventById(id);
 
   return (

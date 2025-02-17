@@ -5,15 +5,13 @@ import { auth } from "@clerk/nextjs/server";
 import React from "react";
 
 type UpdateParamProps = {
-  params: {
-    id: string
-  }
+  params: Promise<{ id: string }>;
 }
 const UpdateEvents = async ( {params}: UpdateParamProps ) => {
-
-  const resolvedParams = await params; // Pastikan params di-resolve dulu
-  const event = await getEventById(resolvedParams.id);
   
+  const { id } = await params;
+  const event = await getEventById(id);
+
   const { sessionClaims } = await auth();
   const userId = sessionClaims?.userId as string;
 
