@@ -5,8 +5,10 @@ import Image from 'next/image'
 import React from 'react'
 
 const EventDetails = async ( {params}: SearchParamProps ) => {
-  const resolvedParams = await params; // Pastikan params di-resolve dulu
-  const event = await getEventById(resolvedParams.id);
+  const { id } = await params;  // Tunggu sampai params resolved menjadi { id: string }
+
+  // Ambil event berdasarkan id
+  const event = await getEventById(id);
 
   return (
     <section className='flex justify-center bg-primary-50 bg-dotted-pattern bg-contain'>
