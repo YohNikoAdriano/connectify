@@ -33,7 +33,7 @@ const Card = async ( {event, hasOrderLink, hidePrice}: CardProps) => {
         </div>
       )}
 
-      <Link href={`/events/${event._id}`} className='flex flex-col min-h-[230px] gap-3 p-5 md:gap-4'>
+      <div className='flex flex-col min-h-[230px] gap-3 p-5 md:gap-4'>
         {/* Is User has Purchased the Ticket ? Hide Price and Category */}
         {!hidePrice && 
           <div className='flex gap-2'>
@@ -48,17 +48,19 @@ const Card = async ( {event, hasOrderLink, hidePrice}: CardProps) => {
 
         {/* Event Information */}
         <p className='p-medium-16 md:p-medium-18 text-grey-500'>{formatDateTime(event.startDateTime).dateTime}</p>
-        <p className='p-medium-16 md:p-medium-20 line-clamp-2 flex-1 text-black'>{event.title}</p>
+        <Link href={`/events/${event._id}`} >
+          <p className='p-medium-16 md:p-medium-20 line-clamp-2 flex-1 text-black'>{event.title}</p>
+        </Link>
         <div className='flex-between w-full'>
           <p className='p-medium-14 md:p-medium-16 text-grey-600'>{event.organizer.firstName} {event.organizer.lastName}</p>
           {hasOrderLink && (
-            <Link href={`/orders?/eventId=${event._id}`}>
+            <Link href={`/orders?/eventId=${event._id}`} className='flex gap-2'>
               <p className='text-primary-500'>Order Details</p>
               <Image src="/assets/icons/arrow.svg" alt='Search' width={10} height={10} />
             </Link>
           )}
         </div>
-      </Link>
+      </div>
     </div>
   )
 }
