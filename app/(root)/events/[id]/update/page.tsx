@@ -9,9 +9,10 @@ type UpdateParamProps = {
     id: string
   }
 }
-const UpdateEvents = async ( {params: {id} }: UpdateParamProps ) => {
+const UpdateEvents = async ( {params}: UpdateParamProps ) => {
 
-  const event = await getEventById(id)
+  const resolvedParams = await params; // Pastikan params di-resolve dulu
+  const event = await getEventById(resolvedParams.id);
   
   const { sessionClaims } = await auth();
   const userId = sessionClaims?.userId as string;

@@ -72,7 +72,6 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
     defaultValues: initialFormValues,
   });
 
-  console.log(form.control._fields)
   
   // OnSubmit
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
