@@ -37,28 +37,34 @@ import { eventDefaultValues } from "@/constant";
 
 // lib
 import { eventFormSchema } from "@/lib/validator";
-import { createEvent } from "@/lib/actions/event.actions";
+import { createEvent, updateEvent } from "@/lib/actions/event.actions";
 import Dropdown from "./Dropdown";
 import FileUploader from "./FileUploader";
+import { IEvent } from "@/lib/database/models/event.model";
 
 type EventFormProps = {
-  userId: string;
-  type: "Create" | "Update";
+  userId: string
+  type: "Create" | "Update"
+  event?: IEvent
+  eventId?: string
 };
 
 const initialFormValues = eventDefaultValues;
 
-const EventForm = ({ userId, type }: EventFormProps) => {
+const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const router = useRouter()
 
   // Image
   const [files, setFiles] = useState<File[]>([]);
   const {startUpload} = useUploadThing('imageUploader')
 
-  // Form
+  // Form Schema and Value
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
-    defaultValues: initialFormValues,
+    defaultValues: event && type === 'Update' ? 
+      {...event, 
+      startDateTime: new Date(event.startDateTime),
+      endDateTime: new Date(event.endDateTime) } : initialFormValues,
   });
   
   // OnSubmit
@@ -74,7 +80,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
       uploadedImageUrl = uploadedImages[0].ufsUrl
     }
 
-    // handle when Create
+    // Handle when Create
     if(type === 'Create'){
       try {
         const newEvent = await createEvent({
@@ -85,8 +91,7 @@ const EventForm = ({ userId, type }: EventFormProps) => {
 
         if(newEvent){
           form.reset()
-          router.push("/")
-          // router.push(`/event/${newEvent._id}`)
+          router.push(`/events/${newEvent._id}`)
         }
 
       } catch (error) {
@@ -94,24 +99,29 @@ const EventForm = ({ userId, type }: EventFormProps) => {
       }
     }
 
-    // handle when Update
-    // if(type === 'Update'){
-    //   try {
-    //     const newEvent = await createEvent({
-    //       event: { ...values, imageUrl: uploadedImageUrl},
-    //       userId,
-    //       path: '/profile'
-    //     })
+    // Handle when Update
+    if(type === 'Update'){
+      if(!eventId) {
+        router.back() 
+        return
+      }
 
-    //     if(newEvent){
-    //       form.reset()
-    //       router.push(`/event/${newEvent._id}`)
-    //     }
+      try {
+        const updatedEvent = await updateEvent({
+          userId,
+          event: { ...values, imageUrl: uploadedImageUrl, _id, eventId},
+          path: `/event/${eventId}`
+        })
 
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
+        if(updatedEvent){
+          form.reset()
+          router.push(`/event/${updatedEvent._id}`)
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
   }
 
