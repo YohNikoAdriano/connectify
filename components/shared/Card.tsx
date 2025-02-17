@@ -33,7 +33,7 @@ const Card = async ( {event, hasOrderLink, hidePrice}: CardProps) => {
         </div>
       )}
 
-      <Link href={`/events/_id`} className='flex flex-col min-h-[230px] gap-3 p-5 md:gap-4'>
+      <Link href={`/events/${event._id}`} className='flex flex-col min-h-[230px] gap-3 p-5 md:gap-4'>
         {/* Is User has Purchased the Ticket ? Hide Price and Category */}
         {!hidePrice && 
           <div className='flex gap-2'>
