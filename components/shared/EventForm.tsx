@@ -49,8 +49,6 @@ type EventFormProps = {
   eventId?: string
 };
 
-const initialFormValues = eventDefaultValues;
-
 const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const router = useRouter()
 
@@ -59,13 +57,22 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const {startUpload} = useUploadThing('imageUploader')
 
   // Form Schema and Value
+  const initialFormValues =
+    event && type === "Update"
+      ? {
+          ...event,
+          startDateTime: new Date(event.startDateTime),
+          endDateTime: new Date(event.endDateTime),
+          // categoryId: event.category.name
+        }
+      : eventDefaultValues;
+
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
-    defaultValues: event && type === 'Update' ? 
-      {...event, 
-      startDateTime: new Date(event.startDateTime),
-      endDateTime: new Date(event.endDateTime) } : initialFormValues,
+    defaultValues: initialFormValues,
   });
+
+  console.log(form.control._fields)
   
   // OnSubmit
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
@@ -109,13 +116,13 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       try {
         const updatedEvent = await updateEvent({
           userId,
-          event: { ...values, imageUrl: uploadedImageUrl, _id, eventId},
-          path: `/event/${eventId}`
+          event: { ...values, imageUrl: uploadedImageUrl, _id: eventId},
+          path: `/events/${eventId}`
         })
 
         if(updatedEvent){
           form.reset()
-          router.push(`/event/${updatedEvent._id}`)
+          router.push(`/events/${updatedEvent._id}`)
         }
 
       } catch (error) {
