@@ -1,10 +1,13 @@
 'use server'
 
 import { headers } from 'next/headers';
-import { CheckoutOrderParams } from './../../types/index';
+import { CheckoutOrderParams, CreateOrderParams } from './../../types/index';
 import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 import { redirect } from 'next/navigation';
+import { handleError } from '../utils';
+import { connectToDB } from '../database';
+import Order from '../database/models/order.model';
 
 export const checkoutOrder = async (order : CheckoutOrderParams) => {
   try {
@@ -38,5 +41,21 @@ export const checkoutOrder = async (order : CheckoutOrderParams) => {
     redirect(session.url!)
   } catch (error) {
     throw error
+  }
+}
+
+export const createOrder = async (order : CreateOrderParams) => {
+  try {
+    await connectToDB()
+
+    const newOrder = await Order.create({
+      ...order,
+      event: order.eventId,
+      buyer: order.buyerId
+    })
+
+    return JSON.stringify(newOrder)
+  } catch (error) {
+    handleError(error)
   }
 }
