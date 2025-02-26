@@ -1,14 +1,16 @@
 import { type ClassValue, clsx } from "clsx";
-
 import { twMerge } from "tailwind-merge";
-import qs from "query-string";
-
 import type { UrlQueryParams, RemoveUrlQueryParams } from "@/types";
 
+// using qs to change string url to object
+import qs from "query-string";
+
+// Manage Classname to Apply Tailwind Style 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Format Date and TIme
 export const formatDateTime = (dateString: Date) => {
   const dateTimeOptions: Intl.DateTimeFormatOptions = {
     weekday: "short", // abbreviated weekday name (e.g., 'Mon')
@@ -54,8 +56,10 @@ export const formatDateTime = (dateString: Date) => {
   };
 };
 
+// Conver File Uploaded to URL
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
 
+// Format Price to USD
 export const formatPrice = (price: string) => {
   const amount = parseFloat(price);
   const formattedPrice = new Intl.NumberFormat("en-US", {
@@ -66,6 +70,7 @@ export const formatPrice = (price: string) => {
   return formattedPrice;
 };
 
+// Modify URL by Adding/Updating New Params without Change Current Path URL 
 export function formUrlQuery({ params, key, value }: UrlQueryParams) {
   const currentUrl = qs.parse(params);
 
@@ -80,6 +85,7 @@ export function formUrlQuery({ params, key, value }: UrlQueryParams) {
   );
 }
 
+// Modify URL by Removing Params without Change Current Path URL
 export function removeKeysFromQuery({
   params,
   keysToRemove,
@@ -99,7 +105,8 @@ export function removeKeysFromQuery({
   );
 }
 
+// Handle Error
 export const handleError = (error: unknown) => {
-  console.error(error);
+  // console.error(error);
   throw new Error(typeof error === "string" ? error : JSON.stringify(error));
 };
