@@ -1,5 +1,6 @@
 import { Schema, model, models, type Document } from "mongoose";
 
+// Interface Order
 export interface IOrder extends Document {
   createdAt: Date;
   stripeId: string;
@@ -15,6 +16,7 @@ export interface IOrder extends Document {
   };
 }
 
+// Interface Order Item
 export type IOrderItem = {
   _id: string;
   totalAmount: string;
@@ -24,6 +26,7 @@ export type IOrderItem = {
   buyer: string;
 };
 
+// Order Structure Data in MongoDB
 const OrderSchema = new Schema({
   createdAt: {
     type: Date,
@@ -37,10 +40,12 @@ const OrderSchema = new Schema({
   totalAmount: {
     type: String,
   },
+  // Foreign Key Event (Event Referenced)
   event: {
     type: Schema.Types.ObjectId,
     ref: "Event",
   },
+  // Foreign Key Buyer (User Referenced)
   buyer: {
     type: Schema.Types.ObjectId,
     ref: "User",

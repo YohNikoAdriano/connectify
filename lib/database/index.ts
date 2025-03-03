@@ -6,7 +6,7 @@ let cached = (global as any).mongoose || { conn: null, promise: null };
 
 const clientOptions: ConnectOptions = {
   serverApi: {
-    version: "1", // "1" is inferred as a literal type here
+    version: "1",
     strict: true,
     deprecationErrors: true,
   },
@@ -14,16 +14,20 @@ const clientOptions: ConnectOptions = {
   bufferCommands: false,
 };
 
+// Connect to MongoDB
 export const connectToDB = async () => {
+
+  // Use cached connection if available
   if (cached.conn) return cached.conn;
 
   if (!MONGODB_URI) throw new Error("MongoDB URI is missing");
 
+  // Save connection to cache memory
   cached.promise = cached.promise || mongoose.connect(MONGODB_URI, clientOptions);
   cached.conn = await cached.promise;
 
+  // Check MongoDB still connected
   await mongoose.connection?.db?.admin().command({ ping: 1 });
-  //   console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
   return cached.conn;
 };

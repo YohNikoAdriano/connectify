@@ -1,11 +1,13 @@
 "use server"
 
+// lib
 import { connectToDB } from '../database';
 import Category from '../database/models/category.model';
 import { handleError } from '../utils';
 import { CreateCategoryParams } from './../../types/index';
 
-export const createCategory = async ( {categoryName}:CreateCategoryParams ) => {
+// CREATE
+export const createCategory = async ( {categoryName}: CreateCategoryParams ) => {
   try{
     await connectToDB()
     const newCategory = await Category.create({name:categoryName})
@@ -16,6 +18,7 @@ export const createCategory = async ( {categoryName}:CreateCategoryParams ) => {
   }
 }
 
+// GET ALL
 export const getAllCategories = async () => {
   try{
     await connectToDB()

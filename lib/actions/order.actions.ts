@@ -1,17 +1,22 @@
 'use server'
 
+// next
 import { headers } from 'next/headers';
-import { CheckoutOrderParams, CreateOrderParams, GetOrdersByEventParams, GetOrdersByUserParams } from './../../types/index';
-import { stripe } from '@/lib/stripe';
-import { NextResponse } from 'next/server';
 import { redirect } from 'next/navigation';
-import { handleError } from '../utils';
+
+// lib
 import { connectToDB } from '../database';
 import Order from '../database/models/order.model';
-import { ObjectId } from 'mongodb';
 import User from '../database/models/user.model';
 import Event from '../database/models/event.model';
+import { handleError } from '../utils';
+import type { CheckoutOrderParams, CreateOrderParams, GetOrdersByEventParams, GetOrdersByUserParams } from './../../types/index';
+import { stripe } from '@/lib/stripe';
 
+// mongoDB
+import { ObjectId } from 'mongodb';
+
+// CHECKOUT ORDER
 export const checkoutOrder = async (order : CheckoutOrderParams) => {
   try {
     const headersList = await headers()
@@ -47,6 +52,7 @@ export const checkoutOrder = async (order : CheckoutOrderParams) => {
   }
 }
 
+// CREATE
 export const createOrder = async (order : CreateOrderParams) => {
   try {
     await connectToDB()
