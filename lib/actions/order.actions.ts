@@ -1,56 +1,15 @@
 'use server'
 
-// next
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-
 // lib
 import { connectToDB } from '../database';
 import Order from '../database/models/order.model';
 import User from '../database/models/user.model';
 import Event from '../database/models/event.model';
 import { handleError } from '../utils';
-import type { CheckoutOrderParams, CreateOrderParams, GetOrdersByEventParams, GetOrdersByUserParams } from './../../types/index';
-import { stripe } from '@/lib/stripe';
+import type { CreateOrderParams, GetOrdersByEventParams, GetOrdersByUserParams } from './../../types/index';
 
 // mongoDB
 import { ObjectId } from 'mongodb';
-
-// CHECKOUT ORDER
-export const checkoutOrder = async (order : CheckoutOrderParams) => {
-  try {
-    const headersList = await headers()
-    const origin = headersList.get('origin')
-
-    const price = order.isFree ? 0 : Number(order.price)*100
-
-    // Create Checkout Sessions from body params.
-    const session = await stripe.checkout.sessions.create({
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            unit_amount: price,
-            product_data: {
-              name: order.eventTitle
-            }
-          },
-          quantity: 1
-        },
-      ],
-      metadata: {
-        eventId: order.eventId,
-        buyerId: order.buyerId
-      },
-      mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/profile`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/`,
-    });
-    redirect(session.url!)
-  } catch (error) {
-    throw error
-  }
-}
 
 // CREATE
 export const createOrder = async (order : CreateOrderParams) => {
@@ -70,6 +29,7 @@ export const createOrder = async (order : CreateOrderParams) => {
 }
 
 // GET ORDERS BY EVENT
+// DISPLAY ALL ORDERS IN SPESIFIC EVENT THAT USER ORGANIZED
 export async function getOrdersByEvent({
   searchString,
   eventId,
@@ -132,6 +92,7 @@ export async function getOrdersByEvent({
 }
 
 // GET ORDERS BY USER
+// DISPLAY ALL ORDERS THAT USER BOUGHT
 export async function getOrdersByUser({
   userId,
   limit = 3,

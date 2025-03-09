@@ -6,8 +6,7 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onCheckout = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default form submission
-
+    e.preventDefault();
     setIsLoading(true);
 
     try {
@@ -19,7 +18,7 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
         buyerId: userId,
       };
 
-      // fetch api Stripe
+      // Fetch API Stripe
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
@@ -28,6 +27,7 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
         body: JSON.stringify(order),
       });
 
+      // If Fetching Success
       const data = await res.json();
       if (data.url) {
         // Redirect to Stripe Checkout Page
