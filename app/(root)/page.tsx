@@ -30,7 +30,7 @@ export default async function Home( {searchParams}: SearchParamProps) {
             <h1 className="h1-bold">"Explore, Connect, Create!" Bringing People Together, One Event at a Time</h1>
             <p className="p-regular-20 md:p-regular-24">Your gateway to meaningful connections and unforgettable experiences. Discover events, join communities, and meet people who share your passions—all in one seamless platform.</p>
             <Button size='lg' asChild className="button w-full sm:w-fit">
-              <Link href={'#events'}>
+              <Link href='#events'>
                 Explore Now!
               </Link>
             </Button>
@@ -41,7 +41,7 @@ export default async function Home( {searchParams}: SearchParamProps) {
         </div>
       </section>
 
-      <section className="wrapper my-8 flex flex-col gap-8 md:gap-12">
+      <section id='events' className="wrapper my-8 flex flex-col gap-8 md:gap-12">
         <h2 className="h2-bold">
           Trust by <br /> Thousands of Events
         </h2>
@@ -51,7 +51,7 @@ export default async function Home( {searchParams}: SearchParamProps) {
         </div>
 
         {/* All Event Data */}
-        <Collection data={events?.data} emptyTitle= "No Event Found" emptyStateSubtext= "Come Back Later" collectionType="All_Events" limit={6} page={1} totalPages={2}/>
+        <Collection data={events?.data} emptyTitle= "No Event Found" emptyStateSubtext= "Come Back Later" collectionType="All_Events" limit={6} page={page} totalPages={events?.totalPages}/>
       </section>
     </>
   );

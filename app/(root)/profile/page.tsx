@@ -1,12 +1,15 @@
+// next
+import { auth } from '@clerk/nextjs/server'
+import Link from 'next/link'
+
+// lib
 import Collection from '@/components/shared/Collection'
 import { Button } from '@/components/ui/button'
 import { getEventsByUser } from '@/lib/actions/event.actions'
 import { getOrdersByUser } from '@/lib/actions/order.actions'
 import { IOrder } from '@/lib/database/models/order.model'
 import { SearchParamProps } from '@/types'
-import { auth } from '@clerk/nextjs/server'
-import Link from 'next/link'
-import React from 'react'
+
 
 const ProfilePage = async ( {searchParams}: SearchParamProps ) => {
 
@@ -50,7 +53,7 @@ const ProfilePage = async ( {searchParams}: SearchParamProps ) => {
       </section>
 
       <section className='wrapper my-8'>
-        <Collection data={organizedEvents?.data} emptyTitle= "No Event have been Created Yet" emptyStateSubtext= "Go Create Some Now!" collectionType="Event_Organized" limit={6} page={eventsPage} urlParamName='eventsPage' totalPages={organizedEvents?.totalPages}/>
+        <Collection data={organizedEvents?.data} emptyTitle= "No Event have been Created Yet" emptyStateSubtext= "Go Create Some Now!" collectionType="Event_Organized" limit={3} page={eventsPage} urlParamName='eventsPage' totalPages={organizedEvents?.totalPages}/>
       </section>
     </>
   )

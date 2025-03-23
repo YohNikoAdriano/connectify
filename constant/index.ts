@@ -6,7 +6,7 @@ export const headerLinks = [
   },
   {
     label: "Explore Event",
-    route: "#events",
+    route: "/#events",
   },
   {
       label: "Create Event",

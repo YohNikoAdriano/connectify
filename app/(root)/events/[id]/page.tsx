@@ -91,7 +91,7 @@ const EventDetails = async ( {params, searchParams}: SearchParamProps ) => {
         <h2 className='h2-bold'>Related Events</h2>
 
         {/* All Event Data */}
-        <Collection data={relatedEvents?.data} emptyTitle= "No Event Found" emptyStateSubtext= "Come Back Later" collectionType="All_Events" limit={6} page={1} totalPages={2}/>
+        <Collection data={relatedEvents?.data} emptyTitle= "No Event Found" emptyStateSubtext= "Come Back Later" collectionType="All_Events" limit={3} page={queryParams.page as string} totalPages={relatedEvents?.totalPages}/>
       </section>
     </>
   )
